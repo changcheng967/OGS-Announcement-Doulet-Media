@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doulet Media OGS Group Announcements</title>
+    <script>
+        // Function to fetch and display announcements
+        async function fetchAnnouncements() {
+            const response = await fetch('http://localhost:5000/api/announcements');
+            const data = await response.json();
+            const announcementList = document.getElementById('announcement-list');
+            announcementList.innerHTML = '';  // Clear previous content
+            data.forEach(announcement => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${announcement.title}: ${announcement.message}`;
+                announcementList.appendChild(listItem);
+            });
+        }
+
+        // Function to post a new announcement
+        async function postAnnouncement() {
+            const title = document.getElementById('title').value;
+            const message = document.getElementById('message').value;
+
+            const response = await fetch('http://localhost:5000/api/announcements', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, message })
+            });
+
+            const data = await response.json();
+            if (response.status === 201) {
+                alert('Announcement posted successfully!');
+                fetchAnnouncements();  // Refresh the list after posting
+            } else {
+                alert(data.error || 'Something went wrong');
+            }
+        }
+
+        // Initial fetch of announcements
+        window.onload = fetchAnnouncements;
+    </script>
+</head>
+<body>
+    <h1>Doulet Media OGS Group Announcements</h1>
+
+    <!-- Form to post a new announcement -->
+    <h2>Post a new announcement</h2>
+    <form onsubmit="event.preventDefault(); postAnnouncement();">
+        <input type="text" id="title" placeholder="Announcement Title" required><br>
+        <textarea id="message" placeholder="Announcement Message" required></textarea><br>
+        <button type="submit">Post Announcement</button>
+    </form>
+
+    <h2>All Announcements</h2>
+    <ul id="announcement-list">
+        <!-- Announcement items will be dynamically added here -->
+    </ul>
+</body>
+</html>
