@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 // Create an express app
 const app = express();
@@ -8,6 +9,9 @@ const app = express();
 // Middleware setup
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // In-memory storage for announcements (replace with a real database in production)
 let announcements = [];
